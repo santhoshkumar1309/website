@@ -1,0 +1,149 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;   /* Pure White */
+    --foreground: 0 0% 0%;     /* Pure Black */
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+    --primary: 28 100% 45%;    /* Medium orange */
+    --primary-foreground: 210 40% 98%;
+    --secondary: 50 100% 50%;  /* Yellow */
+    --secondary-foreground: 0 0% 0%;
+    --accent: 28 95% 65%;      /* Light orange */
+    --accent-foreground: 0 0% 0%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 28 100% 45%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 0 0% 0%;   /* Pure Black */
+    --foreground: 0 0% 100%; /* Pure White */
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 28 95% 65%;   /* Light Orange */
+    --primary-foreground: 210 40% 98%;
+    --secondary: 45 90% 65%; /* Softer yellow-orange */
+    --secondary-foreground: 210 40% 98%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 70%;
+    --accent: 28 90% 70%;    /* Gentle orange accent */
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 40%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 28 95% 65%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground transition-colors duration-300;
+    background-image: none !important; /* Force clear */
+  }
+}
+
+/* Gradient text */
+.gradient-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
+  position: relative;
+}
+
+.dark .gradient-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-accent to-secondary;
+  text-shadow: 0 0 10px rgba(255, 180, 100, 0.25); /* soft orange glow */
+}
+
+/* Hero gradient */
+.hero-gradient {
+  background: radial-gradient(circle at 50% 50%, hsl(var(--primary) / 0.08), transparent 70%);
+}
+
+.dark .hero-gradient {
+  background: radial-gradient(circle at 50% 50%, hsl(var(--primary) / 0.12), transparent 80%);
+}
+
+/* Service cards */
+.service-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.dark .service-card {
+  background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.03), transparent);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dark .service-card:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), 0 0 6px rgba(255, 200, 130, 0.25);
+  border: 1px solid rgba(255, 200, 130, 0.15);
+}
+
+/* Dark mode inputs */
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: hsl(var(--muted));
+  border-color: hsl(var(--border));
+  color: hsl(var(--foreground));
+}
+
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+  border-color: hsl(var(--primary));
+  box-shadow: 0 0 0 2px hsl(var(--primary) / 0.25);
+}
+
+/* Dark mode buttons */
+.dark .bg-primary {
+  box-shadow: 0 0 8px rgba(255, 200, 130, 0.15);
+}
+
+.dark .bg-primary:hover {
+  box-shadow: 0 0 12px rgba(255, 200, 130, 0.25);
+}
+
+/* Headings */
+.dark h1,
+.dark h2,
+.dark h3 {
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.08);
+}
+
+.dark h1.gradient-text,
+.dark h2.gradient-text,
+.dark h3.gradient-text {
+  text-shadow: 0 0 10px rgba(255, 200, 130, 0.25);
+}
+
+/* Company name */
+.hero-company-name {
+  @apply gradient-text;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+}
+
+.dark .hero-company-name {
+  text-shadow: 0 0 12px rgba(255, 200, 130, 0.25);
+}
