@@ -101,7 +101,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center space-x-3">
                 <Mail className="h-5 w-5 text-primary shrink-0" />
-                <span className="text-muted-foreground">evai.info@evaitechnologies.com</span>
+                <span className="text-muted-foreground">info@evaitech.com</span>
               </li>
             </ul>
            <Link href="/contact" passHref>

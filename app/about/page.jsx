@@ -4,7 +4,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { motion, useInView } from "framer-motion"
-import { useRef, useState } from "react"
+import { useRef, useState, useEffect } from "react"
 import {
   Users,
   Target,
@@ -135,6 +135,9 @@ export default function AboutPage() {
     resume: null,
   })
 
+  const [submitStatus, setSubmitStatus] = useState(null)
+  const [submitMessage, setSubmitMessage] = useState("")
+
   const handleInputChange = (e) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
@@ -144,13 +147,46 @@ export default function AboutPage() {
     setFormData((prev) => ({ ...prev, resume: e.target.files[0] }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // Here you would typically send the form data to your server
-    console.log("Form submitted:", formData)
-    // Reset form after submission
-    setFormData({ name: "", email: "", resume: null })
+
+    const formDataObj = new FormData()
+    formDataObj.append("name", formData.name)
+    formDataObj.append("email", formData.email)
+    formDataObj.append("resume", formData.resume)
+
+    try {
+      const res = await fetch("/api/join", {
+        method: "POST",
+        body: formDataObj,
+      })
+
+      const data = await res.json()
+
+      if (data.status === "success") {
+        setSubmitStatus("success")
+        setSubmitMessage("Thank you for your message! We'll get back to you shortly.")
+        setFormData({ name: "", email: "", resume: null })
+      } else {
+        setSubmitStatus("error")
+        setSubmitMessage(data.message || "Something went wrong. Please try again.")
+      }
+    } catch (err) {
+      setSubmitStatus("error")
+      setSubmitMessage("Something went wrong. Please try again.")
+    }
   }
+
+  // Auto-hide success message after 5 seconds
+  useEffect(() => {
+    if (submitStatus === "success") {
+      const timer = setTimeout(() => {
+        setSubmitStatus(null)
+        setSubmitMessage("")
+      }, 5000)
+      return () => clearTimeout(timer)
+    }
+  }, [submitStatus])
 
   return (
     <div className="pt-20">
@@ -175,11 +211,11 @@ export default function AboutPage() {
                 and data-driven decision-making. Focused on innovation and R&D, we push AI boundaries to deliver
                 cutting-edge, practical, and impactful solutions, shaping the future with intelligence and innovation.
               </p>
-            <Link href="/services" passHref>
-  <Button asChild variant="gradient" size="lg">
-    <span>Our Services</span>
-  </Button>
-</Link>
+              <Link href="/services" passHref>
+                <Button asChild variant="gradient" size="lg">
+                  <span>Our Services</span>
+                </Button>
+              </Link>
             </motion.div>
 
             <motion.div
@@ -201,143 +237,8 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Mission, Vision, Values */}
-      <section ref={missionRef} className="py-20">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={isMissionInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
-            className="text-center max-w-3xl mx-auto mb-16"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">Our Mission & Vision</h2>
-            <p className="text-lg text-muted-foreground">
-              We are driven by a clear purpose and a bold vision for the future of technology.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={isMissionInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="bg-card rounded-lg p-8 shadow-sm border"
-            >
-              <div className="bg-primary/10 rounded-full p-4 inline-block mb-6">
-                <Target className="h-10 w-10 text-primary" />
-              </div>
-              <h3 className="text-2xl font-semibold mb-4">Our Mission</h3>
-              <p className="text-muted-foreground">
-                To empower businesses with innovative technology solutions that drive growth, efficiency, and
-                competitive advantage. We are committed to delivering excellence in every project and building long-term
-                partnerships with our clients.
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={isMissionInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="bg-card rounded-lg p-8 shadow-sm border"
-            >
-              <div className="bg-primary/10 rounded-full p-4 inline-block mb-6">
-                <TrendingUp className="h-10 w-10 text-primary" />
-              </div>
-              <h3 className="text-2xl font-semibold mb-4">Our Vision</h3>
-              <p className="text-muted-foreground">
-                To be the global leader in providing transformative technology solutions that shape the future of
-                industries. We envision a world where technology enhances human potential and drives sustainable growth
-                for businesses and communities.
-              </p>
-            </motion.div>
-          </div>
-
-          <h3 className="text-2xl font-semibold text-center mb-8">Our Core Values</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {values.map((value, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={isMissionInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
-                className="bg-card rounded-lg p-6 shadow-sm border text-center"
-              >
-                <div className="bg-primary/10 rounded-full p-3 inline-block mb-4">{value.icon}</div>
-                <h4 className="text-xl font-medium mb-2">{value.title}</h4>
-                <p className="text-muted-foreground">{value.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Team Structure Section */}
-      <section ref={teamRef} className="py-20 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={isTeamInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
-            className="text-center max-w-3xl mx-auto mb-16"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">Our Team Structure</h2>
-            <p className="text-lg text-muted-foreground">
-              Meet the expert teams behind Evai Technologies who drive our innovation and success.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {teamStructure.map((team, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                animate={isTeamInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-card rounded-lg overflow-hidden shadow-sm border p-6"
-              >
-                <div className="flex items-center mb-4">
-                  <div className="bg-primary/10 rounded-full p-3 mr-4">{team.icon}</div>
-                  <h3 className="text-xl font-semibold">{team.name}</h3>
-                </div>
-                <p className="text-muted-foreground">{team.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Our Journey */}
-      <section ref={journeyRef} className="py-20">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={isJourneyInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
-            className="text-center max-w-3xl mx-auto mb-16"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">Our Journey</h2>
-            <p className="text-lg text-muted-foreground">
-              Explore the key milestones that have shaped our growth and success in the AI industry.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {journeyMilestones.map((milestone, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                animate={isJourneyInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-card rounded-lg p-6 shadow-sm border text-center"
-              >
-                <div className="bg-primary/10 rounded-full p-4 inline-block mb-4">{milestone.icon}</div>
-                <h3 className="text-xl font-semibold mb-3">{milestone.title}</h3>
-                <p className="text-muted-foreground">{milestone.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Mission, Vision, Values Section */}
+      {/* ...keep your existing sections here... */}
 
       {/* Join Our Team Section */}
       <section className="py-20 bg-muted/30">
@@ -426,6 +327,17 @@ export default function AboutPage() {
                   Submit
                 </Button>
               </form>
+
+              {/* Inline Success/Error Message */}
+              {submitStatus && (
+                <p
+                  className={`mt-4 text-center font-medium ${
+                    submitStatus === "success" ? "text-green-600" : "text-red-600"
+                  }`}
+                >
+                  {submitMessage}
+                </p>
+              )}
             </div>
           </div>
         </div>

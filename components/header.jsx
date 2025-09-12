@@ -31,107 +31,113 @@ export default function Header() {
   }, [])
 
   return (
-    <header
-      className={cn(
-        "fixed top-0 w-full z-50 transition-all duration-300",
-        scrolled
-          ? theme === "dark"
-            ? "bg-background/90 backdrop-blur-md border-b border-border/30 shadow-lg shadow-black/10 py-2"
-            : "bg-background/80 backdrop-blur-md shadow-md py-2"
-          : "bg-transparent py-4"
-      )}
-    >
-      <div className="container mx-auto px-4 flex items-center justify-between">
-        {/* Logo */}
-        <Link href="/" className="flex items-center space-x-2">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            className={theme === "dark" ? "drop-shadow-[0_0_10px_rgba(255,122,0,0.3)]" : ""}
-          >
-            <div className="flex items-center">
-        <Image
-  src="/image.png" // <-- remove 'public\' and use forward slash
+    <>
+      {/* Header */}
+<header
+  className={cn(
+    "fixed top-0 w-full z-50 transition-all duration-300",
+    scrolled
+      ? theme === "dark"
+        ? "bg-background/90 backdrop-blur-md border-b border-border/30 shadow-lg shadow-black/10 py-2"
+        : "bg-background/80 backdrop-blur-md shadow-md py-2"
+      : "bg-transparent py-4"
+  )}
+>
+  <div className="container mx-auto px-4 flex items-center justify-between">
+    {/* Logo */}
+    <Link href="/" className="flex items-center space-x-2">
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5 }}
+        className={cn(
+          "inline-flex items-center justify-center rounded-xs transition-all duration-300",
+          theme === "dark" ? "bg-white" : "bg-transparent"
+        )}
+      >
+        <div className="flex items-center">
+   <Image
+  src="/image.png"
   alt="Evai Logo"
-  width={95}
-  height={95}
+  width={scrolled && theme === "dark" ? 60 : 70}
+  height={scrolled && theme === "dark" ? 60 : 70}
+  className="object-contain transition-all duration-300 sm:w-20 sm:h-16 w-18 h-15"
 />
 
 
-              <span className="text-xl font-bold"></span>
+          <span className="text-xl font-bold"></span>
+        </div>
+      </motion.div>
+    </Link>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-x-8">
+            <ul className="flex items-center gap-x-8">
+              {navItems.map((item, index) => (
+                <motion.li
+                  key={item.name}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                >
+                  <Link
+                    href={item.path}
+                    className={cn(
+                      "text-sm font-medium transition-colors hover:text-primary",
+                      pathname === item.path ? "text-primary" : "text-foreground/80"
+                    )}
+                  >
+                    {item.name}
+                  </Link>
+                </motion.li>
+              ))}
+            </ul>
+
+            {/* Action Buttons */}
+            <div className="flex items-center space-x-4">
+              <Button variant="fire" size="sm" asChild>
+                <Link href="/consultation">Get a Free Consultation</Link>
+              </Button>
+              <button
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
+                aria-label="Toggle theme"
+              >
+                {theme === "dark" ? (
+                  <Sun className="h-5 w-5 text-yellow-300" />
+                ) : (
+                  <Moon className="h-5 w-5 text-gray-800" />
+                )}
+              </button>
             </div>
-          </motion.div>
-        </Link>
+          </nav>
 
-{/* Desktop Navigation (hidden on mobile) */}
-<nav className="hidden md:flex items-center gap-x-8">
-  <ul className="flex items-center gap-x-8">
-    {navItems.map((item, index) => (
-      <motion.li
-        key={item.name}
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: index * 0.1 }}
-      >
-        <Link
-          href={item.path}
-          className={cn(
-            "text-sm font-medium transition-colors hover:text-primary",
-            pathname === item.path ? "text-primary" : "text-foreground/80"
-          )}
-        >
-          {item.name}
-        </Link>
-      </motion.li>
-    ))}
-  </ul>
+          {/* Mobile Navigation Toggle */}
+          <div className="flex md:hidden items-center gap-2">
+            <button
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="p-1.5 rounded-full hover:bg-muted transition-colors"
+              aria-label="Toggle theme"
+            >
+              {theme === "dark" ? (
+                <Sun className="h-5 w-5 text-yellow-300" />
+              ) : (
+                <Moon className="h-5 w-5" />
+              )}
+            </button>
 
-  {/* Action Buttons */}
-  <div className="flex items-center space-x-4">
-    <Button variant="fire" size="sm" asChild>
-      <Link href="/consultation">Get a Free Consultation</Link>
-    </Button>
-     <button
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
-      aria-label="Toggle theme"
-    >
-      {theme === "dark" ? (
-        <Sun className="h-5 w-5 text-yellow-300" /> // 🌞 Switch to light
-      ) : (
-        <Moon className="h-5 w-5 text-gray-800" />  // 🌙 Switch to dark
-      )}
-    </button>
-  </div>
-</nav>
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="p-1.5 rounded-md hover:bg-muted transition-colors"
+              aria-label="Toggle menu"
+            >
+              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+          </div>
+        </div>
+      </header>
 
-{/* Mobile Navigation Toggle (hidden on desktop) */}
-<div className="flex md:hidden items-center">
-  <button
-    onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-    className="p-2 mr-2 rounded-full hover:bg-muted transition-colors"
-    aria-label="Toggle theme"
-  >
-    {theme === "dark" ? (
-      <Sun className="h-5 w-5 text-yellow-300" />
-    ) : (
-      <Moon className="h-5 w-5" />
-    )}
-  </button>
-  <button
-    onClick={() => setIsOpen(!isOpen)}
-    className="p-2 rounded-md hover:bg-muted transition-colors"
-    aria-label="Toggle menu"
-  >
-    {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-  </button>
-</div>
-
-
-      </div>
-
-      {/* Mobile Navigation Menu */}
+      {/* Mobile Navigation Menu - OUTSIDE HEADER */}
       {isOpen && (
         <motion.div
           initial={{ opacity: 0, height: 0 }}
@@ -139,7 +145,7 @@ export default function Header() {
           exit={{ opacity: 0, height: 0 }}
           transition={{ duration: 0.3 }}
           className={cn(
-            "md:hidden shadow-lg",
+            "md:hidden shadow-lg fixed top-[70px] left-0 w-full z-40",
             theme === "dark"
               ? "bg-background/95 backdrop-blur-md border-b border-white/5"
               : "bg-background/95 backdrop-blur-md"
@@ -170,6 +176,6 @@ export default function Header() {
           </div>
         </motion.div>
       )}
-    </header>
+    </>
   )
 }

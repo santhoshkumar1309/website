@@ -32,13 +32,20 @@ export default function ConsultationPage() {
     setFormState((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+ const handleSubmit = async (e) => {
+  e.preventDefault()
+  setIsSubmitting(true)
 
-    // Simulate form submission
-    setTimeout(() => {
-      setIsSubmitting(false)
+  try {
+    const res = await fetch("/api/consultation", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formState),
+    })
+
+    const result = await res.json()
+
+    if (result.success) {
       setIsSubmitted(true)
       setFormState({
         name: "",
@@ -49,12 +56,19 @@ export default function ConsultationPage() {
         message: "",
       })
 
-      // Reset submission status after 5 seconds
-      setTimeout(() => {
-        setIsSubmitted(false)
-      }, 5000)
-    }, 1500)
+      // Auto-hide success message after 5 seconds
+      setTimeout(() => setIsSubmitted(false), 5000)
+    } else {
+      alert("Failed to send email. Please try again later.")
+    }
+  } catch (error) {
+    console.error(error)
+    alert("An error occurred. Please try again later.")
+  } finally {
+    setIsSubmitting(false)
   }
+}
+
 
   const benefits = [
     {
@@ -140,10 +154,7 @@ export default function ConsultationPage() {
                     className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 p-4 rounded-lg flex items-center space-x-3 mb-6"
                   >
                     <CheckCircle className="h-6 w-6 flex-shrink-0" />
-                    <p>
-                      Thank you for your request! Our team will contact you within 24 hours to schedule your
-                      consultation.
-                    </p>
+                    <p>Thank you for your message! We'll get back to you shortly.</p>
                   </motion.div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-6">
@@ -215,7 +226,7 @@ export default function ConsultationPage() {
 
                     <div>
                       <label htmlFor="projectType" className="block text-sm font-medium mb-2">
-                        What type of project are you interested in?*
+                        Project Type*
                       </label>
                       <select
                         id="projectType"
@@ -237,7 +248,7 @@ export default function ConsultationPage() {
 
                     <div>
                       <label htmlFor="message" className="block text-sm font-medium mb-2">
-                        Tell us about your project or requirements
+                        Message
                       </label>
                       <textarea
                         id="message"
@@ -246,7 +257,7 @@ export default function ConsultationPage() {
                         onChange={handleChange}
                         rows={5}
                         className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background resize-none"
-                        placeholder="Please provide any details that will help us prepare for our consultation..."
+                        placeholder="Provide details to help us prepare for the consultation..."
                       />
                     </div>
 
@@ -313,7 +324,7 @@ export default function ConsultationPage() {
                   <div className="bg-primary/10 rounded-full p-3">
                     <Mail className="h-6 w-6 text-primary" />
                   </div>
-                  <span className="text-lg">evai.info@evaitechnologies.com</span>
+                  <span className="text-lg">info@evaitech.com</span>
                 </div>
               </div>
             </div>
@@ -323,4 +334,3 @@ export default function ConsultationPage() {
     </div>
   )
 }
-

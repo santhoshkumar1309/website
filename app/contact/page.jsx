@@ -32,36 +32,31 @@ export default function ContactPage() {
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+  e.preventDefault();
+  setIsSubmitting(true);
 
-    try {
-      const response = await fetch(
-        "https://script.google.com/macros/s/AKfycbwcE682N-bPgcTCEFn78KGK3RxwqtUGFSDC-Hctd0kXAnD6qRdO6r_P9jgBHhxi3fWC/exec",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formState),
-        }
-      )
+  try {
+    const response = await fetch("/api/contact", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(formState),
+});
 
-      const result = await response.json()
-      console.log("Server response:", result)
-
-      if (result.status === "success") {
-        setIsSubmitted(true)
-        setFormState({ name: "", email: "", subject: "", message: "" })
-        setTimeout(() => setIsSubmitted(false), 5000)
-      } else {
-        alert("Something went wrong. Please try again.")
-      }
-    } catch (err) {
-      console.error("Form submission failed:", err)
-      alert("Failed to submit. Please try again.")
-    } finally {
-      setIsSubmitting(false)
+    const result = await response.json();
+    if (result.status === "success") {
+      setIsSubmitted(true);
+      setFormState({ name: "", email: "", subject: "", message: "" });
+      setTimeout(() => setIsSubmitted(false), 5000);
+    } else {
+      alert("Something went wrong. Please try again.");
     }
+  } catch (err) {
+    console.error(err);
+    alert("Failed to submit. Please try again.");
+  } finally {
+    setIsSubmitting(false);
   }
+};
 
   return (
     <div className="pt-20">
@@ -104,7 +99,7 @@ export default function ContactPage() {
                   <Mail className="h-6 w-6 text-primary" />
                 </div>
                 <span className="text-lg">
-                  evai.info@evaitechnologies.com
+                   info@evaitech.com 
                 </span>
               </motion.div>
             </div>
