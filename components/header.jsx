@@ -32,17 +32,18 @@ export default function Header() {
 
   return (
     <>
-      {/* Header */}
 <header
   className={cn(
-    "fixed top-0 w-full z-50 transition-all duration-300",
+    "fixed top-0 w-full z-40 transition-all duration-300",
     scrolled
-      ? theme === "dark"
-        ? "bg-background/90 backdrop-blur-md border-b border-border/30 shadow-lg shadow-black/10 py-2"
-        : "bg-background/80 backdrop-blur-md shadow-md py-2"
-      : "bg-transparent py-4"
+      ? "bg-white dark:bg-gradient-to-r dark:from-gray-400 dark:via-gray-700 dark:to-gray-900 shadow-md py-2"
+      : "bg-white dark:bg-gradient-to-r dark:from-gray-400 dark:via-gray-700 dark:to-gray-900 py-4"
   )}
 >
+
+
+
+
   <div className="container mx-auto px-4 flex items-center justify-between">
     {/* Logo */}
     <Link href="/" className="flex items-center space-x-2">
@@ -52,16 +53,16 @@ export default function Header() {
         transition={{ duration: 0.5 }}
         className={cn(
           "inline-flex items-center justify-center rounded-xs transition-all duration-300",
-          theme === "dark" ? "bg-white" : "bg-transparent"
+          theme === "dark" 
         )}
       >
         <div className="flex items-center">
    <Image
-  src="/image.png"
+  src="/Picture1-removebg-preview.png"
   alt="Evai Logo"
   width={scrolled && theme === "dark" ? 60 : 70}
   height={scrolled && theme === "dark" ? 60 : 70}
-  className="object-contain transition-all duration-300 sm:w-20 sm:h-16 w-18 h-15"
+  className="object-contain transition-all duration-300 sm:w-40 sm:h-70 w-20 h-70"
 />
 
 
