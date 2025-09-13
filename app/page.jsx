@@ -69,7 +69,8 @@ export default function Home() {
   return (
     <div className="relative">
       {/* Hero Section */}
-      <section ref={heroRef} className="relative min-h-screen flex items-center pt-20 overflow-hidden hero-gradient">
+      <section ref={heroRef} className="pt-[60px] md:pt-[100px] min-h-[calc(100vh-70px)] md:min-h-[calc(100vh-100px)]
+">
         <motion.div style={{ opacity, scale }} className="absolute inset-0 z-0">
           <div className="absolute top-20 right-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
           <div className="absolute bottom-20 left-10 w-72 h-72 bg-secondary/10 rounded-full blur-3xl" />

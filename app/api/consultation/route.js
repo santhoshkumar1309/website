@@ -13,8 +13,8 @@ const transporter = nodemailer.createTransport({
   secure: false,
   requireTLS: true,
   auth: {
-    user: "evaimailsender@gmail.com",
-    pass: "mzwdqwjnaafkhlfo",
+user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASS,
   },
   tls: {
     rejectUnauthorized: false,

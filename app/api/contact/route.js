@@ -9,8 +9,8 @@ export async function POST(req) {
       port: 465,
       secure: true, // true for 465
       auth: {
-       user: "evaimailsender@gmail.com",
-    pass: "mzwdqwjnaafkhlfo",      // 👈 your Gmail App Password (16 chars, no spaces)
+     user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASS,
       },
       tls: {
         rejectUnauthorized: false, // fix for self-signed cert issue

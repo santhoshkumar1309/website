@@ -4,35 +4,53 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { MessageSquare, X, Send } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
+import ReactMarkdown from "react-markdown"
 
 export default function ChatbotButton() {
   const [isOpen, setIsOpen] = useState(false)
-  const [messages, setMessages] = useState([{ role: "bot", content: "Hi there! How can I help you today?" }])
+  const [messages, setMessages] = useState([
+    { role: "bot", content: "Hi there! How can I help you today?" },
+  ])
   const [input, setInput] = useState("")
 
-  const handleSend = () => {
-    if (!input.trim()) return
+  const quickOptions = [
+    "About Evai Technologies",
+    "Services",
+    "Contact Info",
+    "Social Media",
+  ]
 
-    // Add user message
-    setMessages([...messages, { role: "user", content: input }])
+  const handleSend = async (userMessage) => {
+    if (!userMessage?.trim()) return
 
-    // Simulate bot response
-    setTimeout(() => {
+    setMessages((prev) => [...prev, { role: "user", content: userMessage }])
+    setInput("")
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: userMessage }),
+      })
+
+      const data = await res.json()
+
       setMessages((prev) => [
         ...prev,
-        {
-          role: "bot",
-          content:
-            "Thanks for your message! Our team will get back to you shortly. Is there anything else I can help you with?",
-        },
+        { role: "bot", content: data.reply },
       ])
-    }, 1000)
-
-    setInput("")
+    } catch (err) {
+      console.error(err)
+      setMessages((prev) => [
+        ...prev,
+        { role: "bot", content: "we will get back you soon." },
+      ])
+    }
   }
 
   return (
     <>
+      {/* Floating button */}
       <motion.button
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
@@ -45,6 +63,7 @@ export default function ChatbotButton() {
         <MessageSquare className="h-6 w-6" />
       </motion.button>
 
+      {/* Chat window */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -77,17 +96,43 @@ export default function ChatbotButton() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
-                  className={`mb-4 ${message.role === "user" ? "flex justify-end" : "flex justify-start"}`}
+                  className={`mb-4 ${
+                    message.role === "user"
+                      ? "flex justify-end"
+                      : "flex justify-start"
+                  }`}
                 >
                   <div
                     className={`max-w-[80%] p-3 rounded-lg ${
-                      message.role === "user" ? "bg-primary text-white rounded-br-none" : "bg-muted rounded-bl-none"
+                      message.role === "user"
+                        ? "bg-primary text-white rounded-br-none"
+                        : "bg-muted rounded-bl-none"
                     }`}
                   >
-                    {message.content}
+                    {message.role === "bot" ? (
+                      <ReactMarkdown>{message.content}</ReactMarkdown>
+                    ) : (
+                      message.content
+                    )}
                   </div>
                 </motion.div>
               ))}
+
+              {/* Quick options */}
+              {messages[messages.length - 1]?.role === "bot" && (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {quickOptions.map((option, idx) => (
+                    <Button
+                      key={idx}
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleSend(option)}
+                    >
+                      {option}
+                    </Button>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Input */}
@@ -97,11 +142,16 @@ export default function ChatbotButton() {
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSend()}
+                  onKeyDown={(e) => e.key === "Enter" && handleSend(input)}
                   placeholder="Type your message..."
                   className="flex-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                 />
-                <Button onClick={handleSend} size="icon" variant="default" disabled={!input.trim()}>
+                <Button
+                  onClick={() => handleSend(input)}
+                  size="icon"
+                  variant="default"
+                  disabled={!input.trim()}
+                >
                   <Send className="h-4 w-4" />
                 </Button>
               </div>
@@ -112,4 +162,3 @@ export default function ChatbotButton() {
     </>
   )
 }
-

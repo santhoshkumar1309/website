@@ -189,9 +189,9 @@ export default function AboutPage() {
   }, [submitStatus])
 
   return (
-    <div className="pt-20">
+   <div className="pt-70px md:pt-45px">
       {/* Hero Section */}
-      <section ref={heroRef} className="py-20 bg-muted/30">
+      <section ref={heroRef} className="py-0 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <motion.div

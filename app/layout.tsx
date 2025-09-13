@@ -13,7 +13,7 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "Evai Technologies | Innovating the Future with Technology",
   description: "Leading provider of IT solutions, AI/ML services, and cloud computing solutions.",
-    generator: 'v0.dev'
+  generator: "v0.dev",
 }
 
 export default function RootLayout({
@@ -24,11 +24,17 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
           <DarkModeEffect />
           <div className="flex min-h-screen flex-col">
             <Header />
-            <main className="flex-1">{children}</main>
+            {/* Add responsive padding to main to account for fixed header */}
+            <main className="flex-1 pt-[70px] md:pt-[120px]">{children}</main>
             <Footer />
             <ChatbotButton />
           </div>

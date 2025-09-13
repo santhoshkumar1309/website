@@ -95,9 +95,9 @@ export default function ConsultationPage() {
   ]
 
   return (
-    <div className="pt-20">
+     <div className="pt-[70px]">
       {/* Hero Section */}
-      <section ref={heroRef} className="py-20 bg-muted/30">
+      <section ref={heroRef} className="py-0 bg-muted/30">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

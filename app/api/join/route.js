@@ -23,8 +23,8 @@ export async function POST(req) {
       port: 465,
       secure: true,
       auth: {
-  user: "evaimailsender@gmail.com",
-    pass: "mzwdqwjnaafkhlfo",         // App Password
+user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASS,     // App Password
       },
       tls: { rejectUnauthorized: false },
     });
