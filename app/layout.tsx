@@ -33,6 +33,7 @@ export default function RootLayout({
   attribute="class"
   defaultTheme="light"
   disableTransitionOnChange
+   enableSystem={false} // ignore system preference
 >
           <DarkModeEffect />
           <div className="flex min-h-screen flex-col">

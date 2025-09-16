@@ -4,6 +4,7 @@ import { useRef } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation";
 import { motion, useScroll, useTransform, useInView } from "framer-motion"
 import { ArrowRight, Code, Lightbulb, Users, Zap, ChevronRight, Brain, LineChart } from "lucide-react"
 import { AnimatedButton } from "@/components/animated-button"
@@ -98,20 +99,16 @@ export default function Home() {
               </p>
               <div className="flex flex-wrap gap-4">
               <div className="flex gap-4">
-  <Link href="/services" passHref>
-    <Button asChild variant="fire" size="xl">
-      <span>
-        Get Started
-        <ArrowRight className="ml-2 h-5 w-5" />
-      </span>
-    </Button>
-  </Link>
+ 
+<Button asChild variant="fire" size="xl">
+  <Link href="/services">Get Started</Link>
+</Button>
 
-  <Link href="/services" passHref>
-    <Button asChild variant="outline" size="xl">
-      <span>Learn More</span>
-    </Button>
+  <Button asChild variant="outline" size="xl">
+  <Link href="/services">
+    Learn More
   </Link>
+</Button>
 </div>
               </div>
             </motion.div>
@@ -216,108 +213,138 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {services.map((service, index) => (
               <AnimatedSection key={index} delay={index * 0.1} direction="up">
-                <Card3D className="bg-card rounded-lg p-6 shadow-sm border service-card">
-                  <div className="bg-primary/10 rounded-full p-4 inline-block mb-4">{service.icon}</div>
-                  <h3 className="text-xl font-semibold mb-3">{service.title}</h3>
-                  <p className="text-muted-foreground mb-4">{service.description}</p>
-                  <Link href="/services" className="text-primary inline-flex items-center hover:underline">
-                    Learn more <ChevronRight className="h-4 w-4 ml-1" />
-                  </Link>
-                </Card3D>
+          <Card3D className="bg-card rounded-lg p-6 shadow-sm border service-card">
+  <div className="bg-primary/10 rounded-full p-4 inline-block mb-4">{service.icon}</div>
+  <h3 className="text-xl font-semibold mb-3">{service.title}</h3>
+  <p className="text-muted-foreground mb-4">{service.description}</p>
+      <div className="text-center mt-12">
+      <AnimatedButton
+        href="/services"
+        variant="glass"
+        size="xl"
+        className="border-black text-black dark:border-white dark:text-white hover:bg-black/10 dark:hover:bg-white/10"
+        withArrow
+      >
+        Learn More
+      </AnimatedButton>
+    </div>
+</Card3D>
+
               </AnimatedSection>
             ))}
           </div>
 
-          <div className="text-center mt-12">
-            <Button variant="outline" size="lg" asChild>
-              <Link href="/services">View All Services</Link>
-            </Button>
-          </div>
+        <div className="text-center mt-12">
+<AnimatedButton
+  href="/services"
+  variant="glass"
+  size="xl"
+  className="border-black text-black dark:border-white dark:text-white hover:bg-black/10 dark:hover:bg-white/10"
+  withArrow
+>
+  Explore Our Services
+</AnimatedButton>
+
+
+</div>
+
         </div>
       </section>
 
-      {/* Products Showcase Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="text-center max-w-3xl mx-auto mb-16"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Our <span className="gradient-text">Products</span>
-            </h2>
-            <p className="text-lg text-muted-foreground">
-              Discover our innovative AI-powered solutions designed to transform your business operations and drive
-              growth.
+   {/* Products Showcase Section */}
+<section className="py-20">
+  <div className="container mx-auto px-4">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      viewport={{ once: true }}
+      className="text-center max-w-3xl mx-auto mb-16"
+    >
+      <h2 className="text-3xl md:text-4xl font-bold mb-6">
+        Our <span className="gradient-text">Products</span>
+      </h2>
+      <p className="text-lg text-muted-foreground">
+        Discover our innovative AI-powered solutions designed to transform your business operations and drive growth.
+      </p>
+    </motion.div>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <AnimatedSection direction="up" delay={0.1}>
+        <div className="bg-card rounded-lg overflow-hidden border shadow-sm h-full flex flex-col">
+          <div className="relative h-48 w-full">
+            <Image
+              src="https://miro.medium.com/v2/resize:fit:1100/format:webp/1*tUdFs2QVS7PYZXT2pQ681w.jpeg"
+              alt="EVAI-Vision Billing System"
+              fill
+              className="object-cover"
+            />
+          </div>
+          <div className="p-6 flex flex-col flex-grow">
+            <h3 className="text-xl font-semibold mb-3 gradient-text">EVAI-Vision Billing System</h3>
+            <p className="text-muted-foreground mb-4 flex-grow">
+              AI-powered automated billing system with high-accuracy image processing for streamlined invoicing.
             </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <AnimatedSection direction="up" delay={0.1}>
-              <div className="bg-card rounded-lg overflow-hidden border shadow-sm h-full flex flex-col">
-                <div className="relative h-48 w-full">
-                  <Image
-                    src="https://miro.medium.com/v2/resize:fit:1100/format:webp/1*tUdFs2QVS7PYZXT2pQ681w.jpeg"
-                    alt="EVAI-Vision Billing System"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="p-6 flex flex-col flex-grow">
-                  <h3 className="text-xl font-semibold mb-3 gradient-text">EVAI-Vision Billing System</h3>
-                  <p className="text-muted-foreground mb-4 flex-grow">
-                    AI-powered automated billing system with high-accuracy image processing for streamlined invoicing.
-                  </p>
-                  <div className="mt-auto">
-                    <Button variant="outline" size="sm" asChild className="w-full">
-                      <Link href="/products#vision-billing">
-                        Learn More
-                      </Link>
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </AnimatedSection>
-
-            <AnimatedSection direction="up" delay={0.2}>
-              <div className="bg-card rounded-lg overflow-hidden border shadow-sm h-full flex flex-col">
-                <div className="relative h-48 w-full">
-                  <Image
-                    src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop"
-                    alt="EVAI-VisionGuard"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="p-6 flex flex-col flex-grow">
-                  <h3 className="text-xl font-semibold mb-3 gradient-text">EVAI-VisionGuard</h3>
-                  <p className="text-muted-foreground mb-4 flex-grow">
-                    Real-time security monitoring with AI-driven behavior analysis for enhanced theft prevention.
-                  </p>
-                  <div className="mt-auto">
-                    <Button variant="outline" size="sm" asChild className="w-full">
-                      <Link href="/products#vision-guard">
-                        Learn More
-                      </Link>
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </AnimatedSection>
-          </div>
-
-          <div className="text-center mt-12">
-            <Button variant="gradient" size="lg" asChild>
-              <Link href="/products">
-                Explore All Products
-              </Link>
-            </Button>
+               <div className="text-center mt-12">
+      <AnimatedButton
+        href="/products"
+        variant="glass"
+        size="xl"
+        className="border-black text-black dark:border-white dark:text-white hover:bg-black/10 dark:hover:bg-white/10"
+        withArrow
+      >
+        Learn More
+      </AnimatedButton>
+    </div>
           </div>
         </div>
-      </section>
+      </AnimatedSection>
+
+      <AnimatedSection direction="up" delay={0.2}>
+        <div className="bg-card rounded-lg overflow-hidden border shadow-sm h-full flex flex-col">
+          <div className="relative h-48 w-full">
+            <Image
+              src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop"
+              alt="EVAI-VisionGuard"
+              fill
+              className="object-cover"
+            />
+          </div>
+          <div className="p-6 flex flex-col flex-grow">
+            <h3 className="text-xl font-semibold mb-3 gradient-text">EVAI-VisionGuard</h3>
+            <p className="text-muted-foreground mb-4 flex-grow">
+              Real-time security monitoring with AI-driven behavior analysis for enhanced theft prevention.
+            </p>
+            <div className="text-center mt-12">
+      <AnimatedButton
+        href="/products"
+        variant="glass"
+        size="xl"
+        className="border-black text-black dark:border-white dark:text-white hover:bg-black/10 dark:hover:bg-white/10"
+        withArrow
+      >
+        Learn More
+      </AnimatedButton>
+    </div>
+          </div>
+        </div>
+      </AnimatedSection>
+    </div>
+
+    <div className="text-center mt-12">
+      <AnimatedButton
+        href="/products"
+        variant="glass"
+        size="xl"
+        className="border-black text-black dark:border-white dark:text-white hover:bg-black/10 dark:hover:bg-white/10"
+        withArrow
+      >
+        Explore Our Products
+      </AnimatedButton>
+    </div>
+  </div>
+</section>
+
 
       {/* Why Choose Us */}
       <section ref={whyUsRef} className="py-20">
