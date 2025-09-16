@@ -14,6 +14,11 @@ export const metadata: Metadata = {
   title: "Evai Technologies | Innovating the Future with Technology",
   description: "Leading provider of IT solutions, AI/ML services, and cloud computing solutions.",
   generator: "v0.dev",
+  icons: {
+    icon: "/logo2.ico", 
+    shortcut: "/favicon.ico",
+    apple: "/iphone.png", 
+  },
 }
 
 export default function RootLayout({
@@ -24,12 +29,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
+     <ThemeProvider
+  attribute="class"
+  defaultTheme="light"
+  disableTransitionOnChange
+>
           <DarkModeEffect />
           <div className="flex min-h-screen flex-col">
             <Header />

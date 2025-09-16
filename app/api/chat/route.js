@@ -1,40 +1,44 @@
 import { NextResponse } from "next/server"
 
+// temporary memory (per server instance — resets on reload)
+let conversationHistory = [
+  {
+    role: "system",
+    content: `
+You are Evai Assistant, the official AI chatbot for **Evai Technologies**.  
+Always answer as if you are representing the company.
+
+🏢 About Evai Technologies:
+Evai Technologies is a cutting-edge technology company based in Karur, Tamil Nadu, India. We specialize in developing innovative, AI-powered solutions that cater to various industries. Our mission is to leverage artificial intelligence and machine learning to provide businesses with advanced tools that enhance efficiency, accuracy, and security.
+
+🛠️ Services:
+- IT Solutions
+- AI & ML Solutions
+- Cloud & Infrastructure Services
+- Custom Software Development
+
+📦 Products:
+EVAI-Vision Billing System → AI-powered billing automation  
+EVAI-VisionGuard → AI-driven theft detection & behavior analysis  
+EVAI-FabricVision → AI-powered textile quality & predictive maintenance  
+
+📍 Contact: info@evaitech.com | Karur, Tamil Nadu, India
+    `,
+  },
+]
+
 export async function POST(req) {
   try {
     const { message } = await req.json()
 
-    // Website content context
-    const websiteContext = `
-You are Evai Assistant for Evai Technologies. The user might ask about our products, services, features, or contact info.
+    if (!message || typeof message !== "string") {
+      return NextResponse.json({ reply: "Please enter a valid message." })
+    }
 
-Company Info:
-- Evai Technologies, Karur, Tamil Nadu, India
-- Contact: +91-6369628052 | info@evaitech.com
-- Website sections: Home, About Us, Services, Products, Contact
+    // add user message to history
+    conversationHistory.push({ role: "user", content: message })
 
-Products:
-1. EVAI-Vision Billing System: AI-powered automated billing system; features: automated invoice extraction, high accuracy, integration with accounting systems.
-2. EVAI-VisionGuard: AI-driven behavior analysis system for theft control; features: real-time suspicious activity detection, alerting, analytics.
-3. EVAI-FabricVision: AI textile solutions; features: defect detection, color quality monitoring, fabric classification, machine monitoring.
-
-Key Features:
-- AI-Powered
-- Secure by Design
-- Scalable Architecture
-- User-Friendly
-- Data Integration
-- Advanced Analytics
-
-Services:
-- IT Solutions
-- AI & ML Solutions
-- Custom Technology Products
-
-Socials:
-- LinkedIn, Twitter, Facebook, Instagram
-`
-
+    // call OpenAI API
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -43,21 +47,20 @@ Socials:
       },
       body: JSON.stringify({
         model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: websiteContext },
-          { role: "user", content: message },
-        ],
+        messages: conversationHistory, // pass full history
       }),
     })
 
     const data = await response.json()
+    const reply =
+      data?.choices?.[0]?.message?.content || "We will get back to you soon."
 
-    // Always return a polite message
-    const reply = data?.choices?.[0]?.message?.content || "We will get back to you soon."
+    // save assistant reply in history
+    conversationHistory.push({ role: "assistant", content: reply })
+
     return NextResponse.json({ reply })
-
   } catch (error) {
-    // On any error, respond politely
+    console.error("Chatbot API error:", error)
     return NextResponse.json({ reply: "We will get back to you soon." })
   }
 }

@@ -69,8 +69,11 @@ export default function Home() {
   return (
     <div className="relative">
       {/* Hero Section */}
-      <section ref={heroRef} className="pt-[60px] md:pt-[100px] min-h-[calc(100vh-70px)] md:min-h-[calc(100vh-100px)]
-">
+  <section
+  ref={heroRef}
+  className="pt-22 md:pt-30 min-h-[calc(100vh-70px)] md:min-h-[calc(100vh-100px)] flex items-center"
+>
+
         <motion.div style={{ opacity, scale }} className="absolute inset-0 z-0">
           <div className="absolute top-20 right-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
           <div className="absolute bottom-20 left-10 w-72 h-72 bg-secondary/10 rounded-full blur-3xl" />
@@ -140,7 +143,7 @@ export default function Home() {
       </section>
 
       {/* Quick Overview */}
-      <section className="py-20">
+      <section className="py-40">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

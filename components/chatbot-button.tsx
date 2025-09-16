@@ -6,47 +6,78 @@ import { MessageSquare, X, Send } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import ReactMarkdown from "react-markdown"
 
+type Message = {
+  role: "user" | "bot"
+  content: string
+}
+
 export default function ChatbotButton() {
-  const [isOpen, setIsOpen] = useState(false)
-  const [messages, setMessages] = useState([
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [messages, setMessages] = useState<Message[]>([
     { role: "bot", content: "Hi there! How can I help you today?" },
   ])
-  const [input, setInput] = useState("")
+  const [input, setInput] = useState<string>("")
 
-  const quickOptions = [
+  const quickOptions: string[] = [
     "About Evai Technologies",
     "Services",
     "Contact Info",
     "Social Media",
   ]
 
-  const handleSend = async (userMessage) => {
-    if (!userMessage?.trim()) return
+  const predefinedReplies: Record<string, string> = {
+  "About Evai Technologies": `Evai Technologies is a cutting-edge technology company based in Karur, Tamil Nadu, India. We specialize in developing innovative, AI-powered solutions that cater to various industries. Our mission is to leverage artificial intelligence and machine learning to provide businesses with advanced tools that enhance efficiency, accuracy, and security.`,
 
-    setMessages((prev) => [...prev, { role: "user", content: userMessage }])
-    setInput("")
+  "Services": `**IT Solutions** → Comprehensive IT solutions tailored to business needs.  
+- **Software Development** → Custom software for unique business challenges.  
+- **Web Development** → Responsive, user-friendly websites & web apps.  
+- **Mobile App Development** → Native & cross-platform iOS/Android apps.  
+- **AI & ML Solutions** → Unlock business potential with AI & ML.  
+- **Data Analytics** → Transform data into actionable insights.  
+- **Natural Language Processing (NLP)** → Chatbots, sentiment analysis, text classification.  
+- **Predictive Analytics** → Forecast trends & behaviors with ML models.`,
 
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: userMessage }),
-      })
+  "Contact Info": `📍 Karur, Tamil Nadu, India, 639114  
+📞 +91-6369628052  
+📧 info@evaitech.com`,
 
-      const data = await res.json()
+  "Social Media": `[LinkedIn](https://linkedin.com) | [Twitter](https://twitter.com) | [Facebook](https://facebook.com) | [Instagram](https://instagram.com)`,
+}
 
-      setMessages((prev) => [
-        ...prev,
-        { role: "bot", content: data.reply },
-      ])
-    } catch (err) {
-      console.error(err)
-      setMessages((prev) => [
-        ...prev,
-        { role: "bot", content: "we will get back you soon." },
-      ])
-    }
+
+const handleSend = async (userMessage: string) => {
+  if (!userMessage.trim()) return
+
+  setMessages((prev) => [...prev, { role: "user", content: userMessage }])
+  setInput("")
+
+  // If it’s a predefined option, return instantly
+  if (predefinedReplies[userMessage]) {
+    setMessages((prev) => [
+      ...prev,
+      { role: "bot", content: predefinedReplies[userMessage] },
+    ])
+    return
   }
+
+  // Otherwise, call API
+  try {
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: userMessage }),
+    })
+
+    const data: { reply: string } = await res.json()
+    setMessages((prev) => [...prev, { role: "bot", content: data.reply }])
+  } catch (err) {
+    console.error(err)
+    setMessages((prev) => [
+      ...prev,
+      { role: "bot", content: "We will get back to you soon." },
+    ])
+  }
+}
 
   return (
     <>
@@ -97,9 +128,7 @@ export default function ChatbotButton() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
                   className={`mb-4 ${
-                    message.role === "user"
-                      ? "flex justify-end"
-                      : "flex justify-start"
+                    message.role === "user" ? "flex justify-end" : "flex justify-start"
                   }`}
                 >
                   <div
