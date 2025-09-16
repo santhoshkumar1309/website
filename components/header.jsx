@@ -21,32 +21,37 @@ const navItems = [
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [mounted, setMounted] = useState(false) // ✅ mounted state for theme
   const pathname = usePathname()
   const { theme, setTheme } = useTheme()
 
   // Track scroll to shrink header
   useEffect(() => {
+    setMounted(true) // ✅ mark component as mounted
     const handleScroll = () => setScrolled(window.scrollY > 10)
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  // Header height for padding
   const headerHeight = 70
-  const mobileMenuHeight = 200 // approx height of mobile menu
+  const mobileMenuHeight = 200
+
+  // Prevent rendering icons before hydration
+  const renderThemeIcon = () => {
+    if (!mounted) return null
+    return theme === "dark" ? <Moon className="h-5 w-5 text-yellow-300" /> : <Sun className="h-5 w-5 text-gray-800" />
+  }
 
   return (
     <>
-<header
-  className={cn(
-    "fixed top-0 w-full z-40 transition-all duration-300",
-    scrolled
-      ? "bg-white dark:bg-gradient-to-r dark:from-gray-400 dark:via-gray-700 dark:to-gray-900 shadow-md py-0" // minimal padding when scrolled
-      : "bg-white dark:bg-gradient-to-r dark:from-gray-400 dark:via-gray-700 dark:to-gray-900 py-1" // tiny default padding
-  )}
->
-
-
+      <header
+        className={cn(
+          "fixed top-0 w-full z-40 transition-all duration-300",
+          scrolled
+            ? "bg-white dark:bg-gradient-to-r dark:from-gray-400 dark:via-gray-700 dark:to-gray-900 shadow-md py-0"
+            : "bg-white dark:bg-gradient-to-r dark:from-gray-400 dark:via-gray-700 dark:to-gray-900 py-1"
+        )}
+      >
         <div className="container mx-auto px-4 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
@@ -99,11 +104,7 @@ export default function Header() {
                 className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
                 aria-label="Toggle theme"
               >
-                {theme === "dark" ? (
-                  <Moon className="h-5 w-5 text-yellow-300" />
-                ) : (
-                  <Sun className="h-5 w-5 text-gray-800" />
-                )}
+                {renderThemeIcon()}
               </button>
             </div>
           </nav>
@@ -115,7 +116,7 @@ export default function Header() {
               className="p-1.5 rounded-full hover:bg-muted transition-colors"
               aria-label="Toggle theme"
             >
-              {theme === "dark" ? <Sun className="h-5 w-5 text-yellow-300" /> : <Moon className="h-5 w-5" />}
+              {renderThemeIcon()}
             </button>
 
             <button
